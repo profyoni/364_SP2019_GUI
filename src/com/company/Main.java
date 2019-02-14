@@ -37,16 +37,26 @@ class App extends JFrame {
     public App() {
         setTitle("First App");
         setVisible(true);
-        setSize(500, 200);
+        setSize(800, 600);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setBackground(Color.ORANGE);
-
+        timer = new Timer(100, new ActionListener() {
+            int counter=0;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateBall();
+                System.out.println("tick");
+                repaint();
+            }
+        });
 
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                timer.start();
+
+                if (!timer.isRunning())
+                  timer.start();
           }
 
             @Override
@@ -60,15 +70,7 @@ class App extends JFrame {
             }
         });
 
-        timer = new Timer(100, new ActionListener() {
-            int counter=0;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               updateBall();
-               System.out.println("tick");
-               repaint();
-            }
-        });
+
         //JPanel panel = new JPanel();
         //add(panel);
 
