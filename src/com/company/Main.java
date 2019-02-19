@@ -92,8 +92,27 @@ class App extends JFrame {
 //                }
 //
 //        );
+        JButton button1 = new JButton("Press Me");
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                button1.setText("I'm so sad");
+                // create a new Thread to run slow op
+                slowOp();
+            }
+        });
+        add(button1, BorderLayout.NORTH);
     }
+private void slowOp()
+{
+for (int i=0;i<1_000_000;i++)
+{
+    x += Math.sqrt(i);
+    System.out.println(i + " " + x);
+}
+}
 
+double x;
     @Override
     public void paint(Graphics g)
     {
@@ -114,7 +133,7 @@ class App extends JFrame {
 public class Main {
 
     public static void main(String[] args) {
-        App app = new App();
+        JFrame  app = new Pong();
 
 //        Timer t = new Timer(100, new ActionListener() {
 //            int counter=0;
