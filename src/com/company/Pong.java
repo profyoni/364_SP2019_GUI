@@ -2,12 +2,11 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 class PongPanel extends JPanel{
     private Timer timer;
@@ -25,6 +24,18 @@ class PongPanel extends JPanel{
                 repaint();
             }
         });
+
+        this.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                timer.start();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                System.out.println(e.getPoint());
+            }
+        });
     }
     private void updateBall()
     {
@@ -36,6 +47,7 @@ class PongPanel extends JPanel{
         ball.y += delta.y;
         System.out.println(ball);
     }
+
     @Override
     public void paint(Graphics g)
     {
@@ -52,13 +64,55 @@ class PongPanel extends JPanel{
         g.fillOval(ball.x, ball.y, 30,30);
     }
 }
+
 public class Pong extends JFrame {
 
     public Pong() {
         setTitle("Pong 0.1");
         setSize(800, 600);
         setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                Properties appProps = new Properties();
+                try {
+                    InputStream is = new FileInputStream("appsProperties.bin");
+                    appProps.load(is);
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                Point p = new Point();
+                p.x = Integer.parseInt(appProps.getProperty(WindowLocationX));
+                p.y = Integer.parseInt(appProps.getProperty(WindowLocationY));
+                Pong.this.setLocation(p);
+                System.out.println(p);
+            }
+            final String WindowLocationX = "WindowLocationX";
+            final String WindowLocationY = "WindowLocationY";
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Point p = Pong.this.getLocation();
+                Properties appProps = new Properties();
+                appProps.setProperty(WindowLocationX, p.x + "");
+                appProps.setProperty(WindowLocationY, p.y + "");
+                try {
+                    OutputStream os = new FileOutputStream("appsProperties.bin");
+                    appProps.store(os, "cool comment");
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                System.out.println(p);
+                System.exit(0);
+            }
+
+        });
 
 
         JPanel panel = new PongPanel();
